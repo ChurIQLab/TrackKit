@@ -49,4 +49,16 @@ final class TrackerTests: XCTestCase {
         let event = try XCTUnwrap(Tracker.trackedEvents.first)
         XCTAssertTrue(event.parameters.isEmpty)
     }
+
+    func testConcurrentTrackKeepsAllEvents() throws {
+        try Tracker.configure(TrackerConfiguration(apiKey: "key"))
+
+        // Выполняем замыкание 1000 раз, распределяя вызовы по всем ядрам ПАРАЛЛЕЛЬНО.
+        // Возвращает только когда все 1000 вызово завершились
+        DispatchQueue.concurrentPerform(iterations: 1000) { i in
+            Tracker.track("track-\(i)")
+        }
+
+        XCTAssertEqual(Tracker.trackedEvents.count, 1000)
+    }
 }
