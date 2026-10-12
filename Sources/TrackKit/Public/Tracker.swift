@@ -4,7 +4,7 @@ public enum Tracker {
     public static let version = "0.1.0"
 
     static var configuration: TrackerConfiguration?
-    public private(set) static var trackedEvents: [TrackerEvent] = []
+    public internal(set) static var trackedEvents: [TrackerEvent] = []
 
     public static func configure(_ config: TrackerConfiguration) throws {
         guard !config.apiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
