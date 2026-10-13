@@ -36,4 +36,14 @@ public enum Tracker {
             $0.trackedEvents.append(TrackerEvent(name: name, parameters: parameters, date: Date()))
         }
     }
+
+    public static func greeting(for name: String) async throws -> String {
+        guard configuration != nil else {
+            throw TrackerError.notConfigured
+        }
+
+        try await Task.sleep(for: .milliseconds(500))   // «сетевой запрос»
+
+        return "Hello, \(name)!"
+    }
 }

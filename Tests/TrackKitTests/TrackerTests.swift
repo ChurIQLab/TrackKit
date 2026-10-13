@@ -61,4 +61,19 @@ final class TrackerTests: XCTestCase {
 
         XCTAssertEqual(Tracker.trackedEvents.count, 1000)
     }
+
+    func testGreetingWithoutConfigurationThrows() async throws {
+        do {
+            _ = try await Tracker.greeting(for: "Tracker")
+            XCTFail("Ожидали ошибку notConfigured")
+        } catch {
+            XCTAssertEqual(error as? TrackerError, .notConfigured)
+        }
+    }
+
+    func testGreetingReturnsHelloAfterConfigure() async throws {
+        try Tracker.configure(TrackerConfiguration(apiKey: "key"))
+        let greeting = try await Tracker.greeting(for: "Tracker")
+        XCTAssertEqual(greeting, "Hello, Tracker!")
+    }
 }
