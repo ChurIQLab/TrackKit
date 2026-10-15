@@ -76,4 +76,9 @@ final class TrackerTests: XCTestCase {
         let greeting = try await Tracker.greeting(for: "Tracker")
         XCTAssertEqual(greeting, "Hello, Tracker!")
     }
+
+    func testLogLevelOrder() {
+        XCTAssertLessThan(TrackerConfiguration.LogLevel.debug, .info)
+        XCTAssertLessThan(TrackerConfiguration.LogLevel.info, .error)
+    }
 }

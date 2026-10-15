@@ -1,9 +1,13 @@
 
 public struct TrackerConfiguration: Sendable {
 
-    public enum Environment: Sendable { case sandbox, production }
+    public enum Environment: Sendable {
+        case sandbox, production
+    }
 
-    public enum LogLevel: Sendable { case debug, info, error }
+    public enum LogLevel: Sendable, Comparable {
+        case debug, info, error
+    }
 
     public let apiKey: String
     public let environment: Environment
