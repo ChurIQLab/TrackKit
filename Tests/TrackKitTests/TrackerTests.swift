@@ -49,4 +49,36 @@ final class TrackerTests: XCTestCase {
         let event = try XCTUnwrap(Tracker.trackedEvents.first)
         XCTAssertTrue(event.parameters.isEmpty)
     }
+
+    func testConcurrentTrackKeepsAllEvents() throws {
+        try Tracker.configure(TrackerConfiguration(apiKey: "key"))
+
+        // Выполняем замыкание 1000 раз, распределяя вызовы по всем ядрам ПАРАЛЛЕЛЬНО.
+        // Возвращает только когда все 1000 вызово завершились
+        DispatchQueue.concurrentPerform(iterations: 1000) { i in
+            Tracker.track("track-\(i)")
+        }
+
+        XCTAssertEqual(Tracker.trackedEvents.count, 1000)
+    }
+
+    func testGreetingWithoutConfigurationThrows() async throws {
+        do {
+            _ = try await Tracker.greeting(for: "Tracker")
+            XCTFail("Ожидали ошибку notConfigured")
+        } catch {
+            XCTAssertEqual(error as? TrackerError, .notConfigured)
+        }
+    }
+
+    func testGreetingReturnsHelloAfterConfigure() async throws {
+        try Tracker.configure(TrackerConfiguration(apiKey: "key"))
+        let greeting = try await Tracker.greeting(for: "Tracker")
+        XCTAssertEqual(greeting, "Hello, Tracker!")
+    }
+
+    func testLogLevelOrder() {
+        XCTAssertLessThan(TrackerConfiguration.LogLevel.debug, .info)
+        XCTAssertLessThan(TrackerConfiguration.LogLevel.info, .error)
+    }
 }

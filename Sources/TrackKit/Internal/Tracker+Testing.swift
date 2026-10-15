@@ -1,7 +1,6 @@
 
 extension Tracker {
     static func resetForTesting() {
-        configuration = nil
-        trackedEvents.removeAll()
+        state.withLock { $0 = State() }
     }
 }

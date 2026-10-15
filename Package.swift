@@ -29,13 +29,19 @@ let package = Package(
             name: "TrackKit",
             resources: [
                 .process("Resources")      // путь относительно Sources/TrackKit/
+            ],
+            swiftSettings: [                // тут задаются флаги компилятора
+                .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
 
         // Тестовый таргет. Исходники ищутся в Tests/<имя таргета>/
         .testTarget(
             name: "TrackKitTests",
-            dependencies: ["TrackKit"]  // тестам нужен доступ к основному модулю
+            dependencies: ["TrackKit"],  // тестам нужен доступ к основному модулю
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
         )
     ]
 )
